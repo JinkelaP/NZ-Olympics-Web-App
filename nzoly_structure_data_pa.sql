@@ -52,13 +52,13 @@ Position INT,
 FOREIGN KEY (StageID) REFERENCES event_stage(StageID)
 ON UPDATE CASCADE
 ON DELETE CASCADE,
-FOREIGN KEY (MemberID) REFERENCES Members(MemberID)
+FOREIGN KEY (MemberID) REFERENCES members(MemberID)
 ON UPDATE CASCADE
 ON DELETE CASCADE
 );
 
 
-INSERT INTO Events VALUES (1,"Slopestyle","Snowboarding",101),
+INSERT INTO events VALUES (1,"Slopestyle","Snowboarding",101),
 (3,"Big Air","Snowboarding",101),
 (5,"Men's Halfpipe","Freestyle Skiing",103),
 (6,"Men's 20 km individual biathlon","Biathlon",123),
