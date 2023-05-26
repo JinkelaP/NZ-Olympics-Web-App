@@ -43,3 +43,7 @@ def listevents():
     eventList = connection.fetchall()
     return render_template("eventlist.html", eventlist = eventList)
 
+
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
