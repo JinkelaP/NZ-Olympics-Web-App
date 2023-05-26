@@ -9,7 +9,7 @@ import mysql.connector
 from mysql.connector import FieldType
 import connect
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 dbconn = None
 connection = None
