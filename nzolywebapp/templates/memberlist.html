@@ -36,7 +36,7 @@
         <tr>
             {% for entry in member %}
             {% if loop.index == 2 %}
-            <td><a href="{{ url_for('memberInfo', member_id=member[0]) }}">{{ entry }}</a></td>
+            <td><a href="{{ url_for('memberPage', member_id=member[0]) }}">{{ entry }}</a></td>
             {% else %}
             <td>{{ entry }}</td>
             {% endif %}

@@ -32,6 +32,11 @@ def memberIDValid(member_id):
         if id[0] == member_id:
             return True
 
+# redirect all 404 pages to my bootstrapped one.
+@app.errorhandler(404)
+def pageNotFound(error):
+    return render_template('404.html'), 404
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -47,25 +52,27 @@ def listmembers():
     return render_template("memberlist.html", memberlist = memberList)
 
 @app.route("/member/<int:member_id>")
-def memberInfo(member_id):
+def memberPage(member_id):
     if memberIDValid(member_id) == True:
         connection = getCursor()
-        connection.execute(f"SELECT members.teamID \
+        connection.execute(f"SELECT members.teamID, members.FirstName, members.LastName \
                            FROM members\
                            WHERE members.MemberID={member_id}")
-        memberTeamID = connection.fetchall()
+        memberInfo = connection.fetchall()
         
+        nameMember = memberInfo[0][1] + ' ' + memberInfo[0][2]
+
         connection = getCursor()
         connection.execute(f"SELECT events.EventName, event_stage.StageDate, event_stage.StageName, event_stage.Location \
                            FROM events\
                            INNER JOIN event_stage ON events.EventID=event_stage.EventID\
-                           WHERE events.NZTeam={memberTeamID[0][0]}")
+                           WHERE events.NZTeam={memberInfo[0][0]}")
         upcomingList = connection.fetchall()
 
 
 
 
-        return render_template("member.html",upcominglist=upcomingList)
+        return render_template("member.html",upcominglist=upcomingList,name_member=nameMember)
     else:
         return render_template("404.html")
 # designed a validation of member id and 404 page in case that someone type an unavailable number to the link.
