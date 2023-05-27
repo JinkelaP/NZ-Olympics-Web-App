@@ -9,7 +9,7 @@ import mysql.connector
 from mysql.connector import FieldType
 import connect
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 dbconn = None
 connection = None
@@ -25,7 +25,7 @@ def getCursor():
 
 @app.route("/")
 def home():
-    return render_template("base.html")
+    return render_template("index.html")
 
 @app.route("/listmembers")
 def listmembers():
