@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Member{% endblock %}
-{% block eventlist_active %}active{% endblock %}
+
 {% block content %}
 
 <h1 class="display-4 text-body-emphasis fw-bold">Name</h1>
@@ -11,14 +11,14 @@
 <table class="table table-striped table-bordered border-100">
     <thead>
         <tr>
+            <th>Event</th>
             <th>Date</th>
-            <th>Status</th>
+            <th>Stage</th>
             <th>Location</th>
-            <th>Award</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        {% for event in eventlist %}
+        {% for event in upcominglist %}
         <tr>
             {% for entry in event %}
             <td>{{entry}}</td>

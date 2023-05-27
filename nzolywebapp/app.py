@@ -23,6 +23,15 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
+# designed a validation of member id
+def memberIDValid(member_id):
+    connection = getCursor()
+    connection.execute('SELECT members.MemberID from Members;')
+    memberIDList = connection.fetchall()
+    for id in memberIDList:
+        if id[0] == member_id:
+            return True
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -30,19 +39,36 @@ def home():
 @app.route("/listmembers")
 def listmembers():
     connection = getCursor()
-    connection.execute("SELECT teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate, members.MemberID \
+    connection.execute("SELECT  members.MemberID, members.FirstName, members.LastName, teams.TeamName, members.City, members.Birthdate \
                        FROM members \
                        INNER JOIN teams ON members.teamID=teams.TeamID \
-                       ORDER BY teams.TeamName, members.FirstName;")
+                       ORDER BY members.MemberID;")
     memberList = connection.fetchall()
-    def getMemberID():
-        memberID = ''
-    # print(memberList)
     return render_template("memberlist.html", memberlist = memberList)
 
-@app.route("/member/<int:FirstName>")
-def member(firstName):
-    return render_template("member.html",FirstName=firstName)
+@app.route("/member/<int:member_id>")
+def memberInfo(member_id):
+    if memberIDValid(member_id) == True:
+        connection = getCursor()
+        connection.execute(f"SELECT members.teamID \
+                           FROM members\
+                           WHERE members.MemberID={member_id}")
+        memberTeamID = connection.fetchall()
+        
+        connection = getCursor()
+        connection.execute(f"SELECT events.EventName, event_stage.StageDate, event_stage.StageName, event_stage.Location \
+                           FROM events\
+                           INNER JOIN event_stage ON events.EventID=event_stage.EventID\
+                           WHERE events.NZTeam={memberTeamID[0][0]}")
+        upcomingList = connection.fetchall()
+
+
+
+
+        return render_template("member.html",upcominglist=upcomingList)
+    else:
+        return render_template("404.html")
+# designed a validation of member id and 404 page in case that someone type an unavailable number to the link.
 
 
 @app.route("/listevents")
