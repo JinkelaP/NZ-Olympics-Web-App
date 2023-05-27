@@ -26,7 +26,7 @@ def getCursor():
 # designed a validation of member id
 def memberIDValid(member_id):
     connection = getCursor()
-    connection.execute('SELECT members.MemberID from Members;')
+    connection.execute('SELECT members.MemberID from members;')
     memberIDList = connection.fetchall()
     for id in memberIDList:
         if id[0] == member_id:
