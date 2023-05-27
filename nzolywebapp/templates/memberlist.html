@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% block title %}List of members{% endblock %}
 {% block memberlist_active %}active{% endblock %}
+
 {% block content %}
-<!-- code in here to display a list of books-->
-<h2>Member List</h2>
-<h3>A list of all NZ Olympic Team members</h3>
+
+<h1 class="display-5 text-body-emphasis fw-bold">Member List</h1>
+<p class="lead">A list of all NZ Olympic Team members</p>
 
 <br />
 
@@ -28,5 +30,7 @@
         {% endfor %}
     </tbody>
 </table>
+
+
 
 {% endblock %}

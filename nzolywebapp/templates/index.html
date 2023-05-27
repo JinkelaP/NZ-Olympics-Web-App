@@ -1,0 +1,31 @@
+<!-- This is the index (homepage) of the website. Buttons are provided to enter different pages. -->
+{% extends "base.html" %}
+{% block title %}NZ Winter Olympics{% endblock %}
+
+{% block content %}
+
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h1 class="display-4 fw-bold text-body-emphasis">Welcome to NZ Winter Olympics</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">The small web app helps the local Olympic Committe to manage members, teams, events and
+            their stages!</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+            <a class="btn btn-danger btn-lg px-4 me-sm-3" 
+                href="{{ url_for('admin') }}">Admin Login</a>
+            <a class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('listevents') }}">List
+                Events </a>
+            <a class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('listmembers') }}">List
+                Members </a>
+        </div>
+    </div>
+    <div class="overflow-hidden" style="max-height: 30vh;">
+        <div class="container px-5">
+            <img src="{{ url_for('static', filename='img/olympic-rings.png') }}"
+                class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" width="700" height="500"
+                loading="lazy">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
