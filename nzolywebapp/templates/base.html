@@ -32,15 +32,13 @@
               class="nav-link {% block eventlist_active %}{% endblock %}">List Events</a></li>
           <li class="nav-item"><a href="{{ url_for('listmembers') }}"
               class="nav-link {% block memberlist_active %}{% endblock %}">List Team Members</a></li>
-          <li class="nav-item"><a href="{{ url_for('admin') }}"
-              class="nav-link {% block admin_active %}{% endblock %}">Admin</a></li>
         </ul>
 
       </div>
     </div>
   </nav>
   <!-- The content of pages.-->
-  <section class="content m-5">
+  <section class="container pt-5">
     <header>
       {% block header %}{% endblock %}
     </header>
