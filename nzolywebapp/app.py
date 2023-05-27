@@ -35,14 +35,24 @@ def listmembers():
                        INNER JOIN teams ON members.teamID=teams.TeamID \
                        ORDER BY teams.TeamName, members.FirstName;")
     memberList = connection.fetchall()
+    def getMemberID():
+        memberID = ''
     # print(memberList)
-    return render_template("memberlist.html", memberlist = memberList)    
+    return render_template("memberlist.html", memberlist = memberList)
+
+@app.route("/member/<int:FirstName>")
+def member(firstName):
+    return render_template("member.html",FirstName=firstName)
 
 
 @app.route("/listevents")
 def listevents():
     connection = getCursor()
-    connection.execute("SELECT * FROM events;")
+    # connection.execute("SELECT * FROM events;")
+    connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName \
+                       FROM events \
+                       INNER JOIN teams ON events.NZTeam=teams.TeamID \
+                       ORDER BY events.EventID;")
     eventList = connection.fetchall()
     return render_template("eventlist.html", eventlist = eventList)
 

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1 class="display-5 text-body-emphasis fw-bold">Member List</h1>
+<h1 class="display-4 text-body-emphasis fw-bold">Member List</h1>
 <p class="lead">A list of all NZ Olympic Team members</p>
 
 <br />
@@ -20,11 +20,25 @@
             <th>Member ID</th>
         </tr>
     </thead>
-    <tbody class="table-group-divider">
+    <!-- <tbody class="table-group-divider">
         {% for member in memberlist %}
         <tr>
             {% for entry in member %}
             <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody> -->
+
+    <tbody class="table-group-divider">
+        {% for member in memberlist %}
+        <tr>
+            {% for entry in member %}
+            {% if loop.index == 2 %} 
+            <td><a href="{{ url_for('member', FirstName=entry) }}">{{ entry }}</a></td>
+            {% else %}
+            <td>{{ entry }}</td>
+            {% endif %}
             {% endfor %}
         </tr>
         {% endfor %}
