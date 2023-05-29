@@ -31,6 +31,16 @@ def memberIDValid(member_id):
     for id in memberIDList:
         if id[0] == member_id:
             return True
+        
+# date convert function
+
+def dateConvert(mySQLConnect):
+    while type(mySQLConnect[0]) == tuple:
+        listTupleInfo = list(mySQLConnect[0])
+        listTupleInfo[1] = listTupleInfo[1].strftime("%d/%m/%Y")
+        mySQLConnect.append(listTupleInfo)
+        mySQLConnect.pop(0)
+                
 
 # redirect all 404 pages to my bootstrapped one.
 @app.errorhandler(404)
@@ -69,6 +79,9 @@ def memberPage(member_id):
                            WHERE events.NZTeam={memberInfo[0][0]}")
         upcomingList = connection.fetchall()
 
+        # convert date
+
+        dateConvert(upcomingList)
 
 
 
