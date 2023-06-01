@@ -52,8 +52,8 @@ def pageNotFound(error):
 def home():
     return render_template("index.html")
 
-@app.route("/listmembers")
-def listmembers():
+@app.route("/member")
+def member():
     connection = getCursor()
     connection.execute("SELECT  members.MemberID, members.FirstName, members.LastName, teams.TeamName, members.City, members.Birthdate \
                        FROM members \
@@ -97,6 +97,7 @@ def memberPage(member_id):
         # convert date
             dateConvert(previousListFull)
         
+        # convert positions to medals or qualifying status
         for memberResult in previousListFull:
             if memberResult[5] == 3:
                 memberResult[5] = 'Bronze'
@@ -111,19 +112,16 @@ def memberPage(member_id):
                                     WHERE event_stage.StageID = {memberResult[7]};')
                 qualiPoints = connection.fetchall()[0][0]
                 
-
-
-                if memberPoints >= qualiPoints:
-                    memberResult[5] = 'Qualified'
+                if memberPoints is int and qualiPoints is int:
+                    if memberPoints >= qualiPoints:
+                        memberResult[5] = 'Qualified'
+                    else:
+                        memberResult[5] = 'Not Qualified'
                 else:
-                    memberResult[5] = 'Not Qualified'
+                    memberResult[5] = 'N/A'
         
         for list in previousListFull:
             del list[-2:]
-
-
-
-
 
         return render_template("member.html",upcominglist=upcomingList,name_member=nameMember,previouslist=previousListFull)
     else:
@@ -131,8 +129,8 @@ def memberPage(member_id):
 # designed a validation of member id and 404 page in case that someone type an unavailable number to the link.
 
 
-@app.route("/listevents")
-def listevents():
+@app.route("/event")
+def event():
     connection = getCursor()
     # connection.execute("SELECT * FROM events;")
     connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName \
@@ -146,3 +144,20 @@ def listevents():
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
+
+@app.route("/search", methods=["GET"])
+def search():
+    searchInput = request.args.get('searchinput')
+
+    connection = getCursor()
+    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName FROM members \
+                JOIN teams ON teams.TeamID = members.TeamID \
+                WHERE MemberID LIKE %s OR FirstName LIKE %s OR LastName LIKE %s \
+                ORDER BY TeamName, LastName;",('%' + searchInput + '%','%' + searchInput + '%','%' + searchInput + '%'))
+    searchResult = connection.fetchall()
+
+    if searchInput == '':
+        searchResult = None
+
+
+    return render_template("search.html", searchresult = searchResult)

@@ -13,13 +13,13 @@
 
 <body>
   <!-- Nav bar.-->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0">
+      <a href="/admin" class="d-flex align-items-center mb-2 mb-lg-0">
         <img src="{{ url_for('static', filename='img/olympic-rings.png') }}" alt="Logo" width="80" height="30" class="px-2">
       </a>      
 
-      <a class="navbar-brand mb-0 h1" href="/">NZ Winter Olympics</a>
+      <a class="navbar-brand mb-0 h1" href="/admin">NZ Winter Olympics</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbars-NZOly"
         aria-controls="navbars-NZOly" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,8 @@
 
       <div class="collapse navbar-collapse" id="navbars-NZOly">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a href="/"
+            class="nav-link active">Return to Mainpage</a></li>
           <li class="nav-item"><a href="{{ url_for('event') }}"
               class="nav-link {% block eventlist_active %}{% endblock %}">List Events</a></li>
           <li class="nav-item"><a href="{{ url_for('member') }}"
