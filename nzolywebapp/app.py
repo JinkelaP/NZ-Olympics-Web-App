@@ -176,8 +176,20 @@ def search():
     if searchInput == '' or searchResult2 == []:
         searchResult2 = None
 
-
-
-
-
     return render_template("search.html", searchresult1 = searchResult1, searchresult2 = searchResult2)
+
+@app.route("/member-edit/<int:member_id>")
+def memberEditPage(member_id):
+    if memberIDValid(member_id) == True:
+        
+        connection = getCursor()
+        connection.execute("SELECT members.MemberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate \
+                           FROM members\
+                           JOIN teams ON teams.TeamID = members.TeamID\
+                           WHERE members.MemberID=%s;", (member_id,))
+        memberInfo = connection.fetchall()
+
+        nameMember = memberInfo[0][2] + ' ' + memberInfo[0][3]
+
+
+    return render_template("member_edit.html",namemember = nameMember,memberinfo = memberInfo)

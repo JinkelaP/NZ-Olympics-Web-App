@@ -1,6 +1,5 @@
 {% extends "base_admin.html" %}
-<!-- {% block title %}Admin page{% endblock %} -->
-{% block admin_active %}active{% endblock %}
+{% block title %}Search{% endblock %}
 {% block content %}
 
 <div class="px-4 pt-1 my-1">
@@ -31,6 +30,7 @@
                 {% for entry in member %}
                     {% if loop.index0 == 3 %}
                         <td><u><b>{{entry}}</b></u></td>
+                        <td><a href="{{ url_for('memberEditPage', member_id=member[0]) }}"><button class="btn btn-outline-warning">Edit</button></a></td>
                     {% else %}
                         <td>{{entry}}</td>
                     {% endif %}
@@ -68,6 +68,7 @@
                 {% for entry in event %}
                     {% if loop.index0 == 3 %}
                         <td><u><b>{{entry}}</b></u></td>
+                        
                     {% else %}
                         <td>{{entry}}</td>
                     {% endif %}
