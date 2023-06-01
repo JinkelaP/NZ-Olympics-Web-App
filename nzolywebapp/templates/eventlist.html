@@ -18,6 +18,7 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
+        {% if eventlist != None %}
         {% for event in eventlist %}
         <tr>
             {% for entry in event %}
@@ -25,8 +26,15 @@
             {% endfor %}
         </tr>
         {% endfor %}
+        {% endif %}
     </tbody>
 </table>
+
+{% if eventlist == None %}
+    <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+        No result found from the database!
+      </div>
+    {% endif %}
 
 
 {% endblock %}

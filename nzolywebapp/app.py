@@ -84,6 +84,8 @@ def memberPage(member_id):
         # convert date
         if upcomingList != []:
             dateConvert(upcomingList)
+        else:
+            upcomingList = None
 
         # Show previous results
         connection.execute("SELECT events.EventName, events.Sport, event_stage.StageDate, event_stage.StageName, event_stage.Location, event_stage_results.Position, event_stage_results.PointsScored, event_stage_results.StageID \
@@ -96,7 +98,7 @@ def memberPage(member_id):
         if previousListFull != []:
         # convert date
             dateConvert(previousListFull)
-        
+      
         # convert positions to medals or qualifying status
         for memberResult in previousListFull:
             if memberResult[5] == 3:
@@ -123,6 +125,9 @@ def memberPage(member_id):
         for list in previousListFull:
             del list[-2:]
 
+        if previousListFull == []:
+            previousListFull = None
+
         return render_template("member.html",upcominglist=upcomingList,name_member=nameMember,previouslist=previousListFull)
     else:
         return render_template("404.html")
@@ -138,6 +143,9 @@ def event():
                        INNER JOIN teams ON events.NZTeam=teams.TeamID \
                        ORDER BY events.EventID;")
     eventList = connection.fetchall()
+
+    if eventList == []:
+        eventList = None
     return render_template("eventlist.html", eventlist = eventList)
 
 
@@ -154,10 +162,22 @@ def search():
                 JOIN teams ON teams.TeamID = members.TeamID \
                 WHERE MemberID LIKE %s OR FirstName LIKE %s OR LastName LIKE %s \
                 ORDER BY TeamName, LastName;",('%' + searchInput + '%','%' + searchInput + '%','%' + searchInput + '%'))
-    searchResult = connection.fetchall()
+    searchResult1 = connection.fetchall()
 
-    if searchInput == '':
-        searchResult = None
+    if searchInput == '' or searchResult1 == []:
+        searchResult1 = None
+
+    connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName FROM events \
+                JOIN teams ON teams.TeamID = events.NZTeam \
+                WHERE EventID LIKE %s OR EventName LIKE %s OR Sport LIKE %s;"\
+                ,('%' + searchInput + '%','%' + searchInput + '%','%' + searchInput + '%'))
+    searchResult2 = connection.fetchall()
+
+    if searchInput == '' or searchResult2 == []:
+        searchResult2 = None
 
 
-    return render_template("search.html", searchresult = searchResult)
+
+
+
+    return render_template("search.html", searchresult1 = searchResult1, searchresult2 = searchResult2)
