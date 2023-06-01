@@ -37,7 +37,8 @@ def memberIDValid(member_id):
 def dateConvert(mySQLConnect):
     while type(mySQLConnect[0]) == tuple:
         listTupleInfo = list(mySQLConnect[0])
-        listTupleInfo[1] = listTupleInfo[1].strftime("%d/%m/%Y")
+        if listTupleInfo[2] is not None:
+            listTupleInfo[2] = listTupleInfo[2].strftime("%d/%m/%Y")
         mySQLConnect.append(listTupleInfo)
         mySQLConnect.pop(0)
                 
@@ -64,28 +65,67 @@ def listmembers():
 @app.route("/member/<int:member_id>")
 def memberPage(member_id):
     if memberIDValid(member_id) == True:
+        # Show name
         connection = getCursor()
-        connection.execute(f"SELECT members.teamID, members.FirstName, members.LastName \
+        connection.execute("SELECT members.FirstName, members.LastName \
                            FROM members\
-                           WHERE members.MemberID={member_id}")
+                           WHERE members.MemberID=%s;", (member_id,))
         memberInfo = connection.fetchall()
         
-        nameMember = memberInfo[0][1] + ' ' + memberInfo[0][2]
+        nameMember = memberInfo[0][0] + ' ' + memberInfo[0][1]
 
-        connection = getCursor()
-        connection.execute(f"SELECT events.EventName, event_stage.StageDate, event_stage.StageName, event_stage.Location \
+        # Show upcoming events
+        connection.execute("SELECT events.EventName, events.Sport, event_stage.StageDate, event_stage.StageName, event_stage.Location, event_stage_results.Position \
                            FROM events\
-                           INNER JOIN event_stage ON events.EventID=event_stage.EventID\
-                           WHERE events.NZTeam={memberInfo[0][0]}")
+                           JOIN event_stage ON events.EventID=event_stage.EventID\
+                           JOIN event_stage_results ON event_stage.StageID = event_stage_results.StageID\
+                           WHERE event_stage_results.PointsScored IS NULL and event_stage_results.memberID=%s;",(member_id,))
         upcomingList = connection.fetchall()
-
         # convert date
+        if upcomingList != []:
+            dateConvert(upcomingList)
 
-        dateConvert(upcomingList)
+        # Show previous results
+        connection.execute("SELECT events.EventName, events.Sport, event_stage.StageDate, event_stage.StageName, event_stage.Location, event_stage_results.Position, event_stage_results.PointsScored, event_stage_results.StageID \
+                           FROM events\
+                           JOIN event_stage ON events.EventID=event_stage.EventID\
+                           JOIN event_stage_results ON event_stage.StageID = event_stage_results.StageID\
+                           WHERE event_stage_results.PointsScored IS NOT NULL and event_stage_results.MemberID=%s;",(member_id,))
+        previousListFull = connection.fetchall()
+        
+        if previousListFull != []:
+        # convert date
+            dateConvert(previousListFull)
+        
+        for memberResult in previousListFull:
+            if memberResult[5] == 3:
+                memberResult[5] = 'Bronze'
+            elif memberResult[5] == 2:
+                memberResult[5] = 'Silver'
+            elif memberResult[5] == 1:
+                memberResult[5] = 'Gold'
+            elif 'quali' or 'heat' in memberResult[4].lower():
+
+                memberPoints = memberResult[6]
+                connection.execute(f'SELECT event_stage.PointsToQualify FROM event_stage \
+                                    WHERE event_stage.StageID = {memberResult[7]};')
+                qualiPoints = connection.fetchall()[0][0]
+                
+
+
+                if memberPoints >= qualiPoints:
+                    memberResult[5] = 'Qualified'
+                else:
+                    memberResult[5] = 'Not Qualified'
+        
+        for list in previousListFull:
+            del list[-2:]
 
 
 
-        return render_template("member.html",upcominglist=upcomingList,name_member=nameMember)
+
+
+        return render_template("member.html",upcominglist=upcomingList,name_member=nameMember,previouslist=previousListFull)
     else:
         return render_template("404.html")
 # designed a validation of member id and 404 page in case that someone type an unavailable number to the link.
