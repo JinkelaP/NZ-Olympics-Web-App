@@ -114,7 +114,7 @@ def memberPage(member_id):
                                     WHERE event_stage.StageID = {memberResult[7]};')
                 qualiPoints = connection.fetchall()[0][0]
                 
-                if memberPoints is int and qualiPoints is int:
+                if type(memberPoints) is float and type(qualiPoints) is float:
                     if memberPoints >= qualiPoints:
                         memberResult[5] = 'Qualified'
                     else:
@@ -212,3 +212,48 @@ def databaseResetSQL():
     connection.execute(sqlStatements)
     
     return redirect(url_for('admin'))
+
+
+@app.route("/admin/Edit")
+def edit():
+    connection = getCursor()
+    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName FROM members \
+                JOIN teams ON teams.TeamID = members.TeamID;")
+    searchResult1 = connection.fetchall()
+
+    if searchResult1 == []:
+        searchResult1 = None
+
+    connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName FROM events \
+                JOIN teams ON teams.TeamID = events.NZTeam;")
+    searchResult2 = connection.fetchall()
+
+    if searchResult2 == []:
+        searchResult2 = None
+
+    connection.execute("SELECT event_stage.StageID, event_stage.StageName, event_stage.StageDate, events.EventName, event_stage.Location, \
+                        event_stage.Qualifying, event_stage.PointsToQualify FROM event_stage \
+                        JOIN events ON events.EventID = event_stage.EventID;")
+    searchResult3 = connection.fetchall()
+
+    if searchResult3 == []:
+        searchResult3 = None
+    else:
+        dateConvert(searchResult3)
+
+    for eventStage in searchResult3:
+        if eventStage[5] == 1:
+            eventStage[5] = 'Yes'
+        elif eventStage[5] == 0:
+            eventStage[5] = 'No'
+
+
+    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3)
+
+@app.route("/admin/member_add")
+def addMember():
+    pass
+
+@app.route("/admin/event_add")
+def addEvent():
+    pass
