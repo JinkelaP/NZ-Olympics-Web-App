@@ -153,7 +153,7 @@ def event():
 def admin():
     return render_template("admin.html")
 
-@app.route("/search", methods=["GET"])
+@app.route("/admin/search", methods=["GET"])
 def search():
     searchInput = request.args.get('searchinput')
 
@@ -176,9 +176,9 @@ def search():
     if searchInput == '' or searchResult2 == []:
         searchResult2 = None
 
-    return render_template("search.html", searchresult1 = searchResult1, searchresult2 = searchResult2)
+    return render_template("search.html", searchresult1 = searchResult1, searchresult2 = searchResult2, searchinput = searchInput)
 
-@app.route("/member-edit/<int:member_id>")
+@app.route("/admin/member-edit/<int:member_id>")
 def memberEditPage(member_id):
     if memberIDValid(member_id) == True:
         

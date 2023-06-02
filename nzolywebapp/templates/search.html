@@ -5,8 +5,9 @@
 <div class="px-4 pt-1 my-1">
     <h1 class="display-4 text-body-emphasis fw-bold">Search</h1>
     <div class="col-lg-6">
-        <form class="d-flex my-3" role="search">
-            <input class="form-control me-2" type="search" name="searchinput" placeholder="Search members or events here!" aria-label="Search">
+        <form class="d-flex my-3" role="search" action="/admin/search" method="GET">
+            <input class="form-control me-2" type="search" name="searchinput" 
+            placeholder="Search members or events here!" aria-label="Search" value="{{ searchinput }}">
             <button class="btn btn-outline-primary" type="submit">Search</button>
         </form>
     
