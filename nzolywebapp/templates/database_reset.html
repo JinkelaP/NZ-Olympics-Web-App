@@ -1,0 +1,18 @@
+{% extends "base_admin.html" %}
+{% block title %}Database Reset{% endblock %}
+{% block content %}
+
+<div class="px-4 pt-1 my-1">
+    <h1 class="display-4 text-body-emphasis fw-bold">WARNING!!!!!!!!!</h1>
+    <p class="lead">Once the database is reset, it will be initialised back to the original one that the assignment files provided.</p>
+    <div class="col-lg-6">
+        
+    <a class="btn btn-danger btn-lg px-4 me-sm-3" href="{{ url_for('databaseResetSQL') }}">CONFIRM Reset Database</a>
+    
+
+
+    </div>
+    
+</div>
+
+{% endblock %}

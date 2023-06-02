@@ -190,6 +190,25 @@ def memberEditPage(member_id):
         memberInfo = connection.fetchall()
 
         nameMember = memberInfo[0][2] + ' ' + memberInfo[0][3]
+    else:
+        return render_template("404.html")
+        
+    return render_template("member_edit.html",namemember = nameMember,memberinfo = memberInfo, memberid = member_id)
+
+@app.route("/admin/database_reset")
+def databaseReset():
+    return render_template("database_reset.html")
 
 
-    return render_template("member_edit.html",namemember = nameMember,memberinfo = memberInfo)
+@app.route("/admin/database_reset/loading")
+def databaseResetSQL():
+    connection = getCursor()
+    connection.execute("DROP TABLE IF EXISTS events, event_stage, event_stage_results, members, teams;")
+    
+
+    with app.open_resource('nzoly_structure_data_pa.sql', 'r') as sqlFile:
+        sqlStatements = sqlFile.read()
+
+    connection.execute(sqlStatements)
+    
+    return redirect(url_for('admin'))
