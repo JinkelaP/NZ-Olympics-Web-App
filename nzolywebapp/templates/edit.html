@@ -4,162 +4,446 @@
 
 <div class="px-4 pt-1 my-1">
     <h1 class="display-4 text-body-emphasis fw-bold">Edit everything!</h1>
-    <br />
+
+    <a class="btn btn-outline-primary btn-lg px-4 my-2 mx-1" href="#members">Members</a>
+    <a class="btn btn-outline-primary btn-lg px-4 my-2 mx-1" href="#events">Events</a>
+    <a class="btn btn-outline-primary btn-lg px-4 my-2 mx-1" href="#stages">Stages</a>
+    <a class="btn btn-outline-primary btn-lg px-4 my-2 mx-1" href="#results">Results</a>
+
     <div class="col-lg-12">
-        <div class="row g-4">
-            <br />
+        <br />
 
-            <!-- Members -->
-            <div class="col-md-7 col-lg-6">
-                <h3 class="text-body-emphasis fw-bold">All Members</h3>
-                <p class="lead">Ordered by team & lastname</p>
-                <a class="btn btn-outline-warning px-4 mb-3" href="{{ url_for('addMember') }}">Add a new member</a>
-                <table class="table table-striped table-bordered border-100">
+        <!-- Members -->
+        <div id="members" class="col-md-7 col-lg-6">
+            <h3 class="text-body-emphasis fw-bold">All Members</h3>
+            <p class="lead">Ordered by team & lastname</p>
+            <button type="button" class="btn btn-warning px-4 mb-3" data-bs-toggle="modal"
+                data-bs-target="#add-member">Add a new member</button>
+            <!-- Add members page -->
+            <div class="modal fade" id="add-member" tabindex="-1" aria-labelledby="member-name" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="member-name">Add a new member!</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('addMember') }}" id="edit-form" class="needs-validation"
+                            novalidate>
+                            <div class="modal-body">
+                                <div class="row g-3">
 
-                    <thead>
-                        <tr>
-                            <th>Member ID</th>
-                            <th>TeamName</th>
-                            <th>FirstName</th>
-                            <th>LastName</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        {% if searchresult1 != None %}
-                        {% for member in searchresult1 %}
-                        <tr>
-                            {% for entry in member %}
-                            {% if loop.index0 == 3 %}
-                            <td><u><b>{{entry}}</b></u></td>
-                            <td><a href="{{ url_for('memberEditPage', member_id=member[0]) }}"><button
-                                        class="btn btn-outline-warning">Edit</button></a></td>
-                            {% else %}
-                            <td>{{entry}}</td>
-                            {% endif %}
+                                    <div class="col-sm-6">
+                                        <label for="firstName" class="form-label">First name</label>
+                                        <input type="text" class="form-control" id="firstName" name="firstName"
+                                            placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
+                                    </div>
 
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                                    <div class="col-sm-6">
+                                        <label for="lastName" class="form-label">Last name</label>
+                                        <input type="text" class="form-control" id="lastName" name="lastName"
+                                            placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Valid last name is required.
+                                        </div>
+                                    </div>
 
-                {% if searchresult1 == None %}
-                <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-                    No result found from the database!
+                                    <div class="col-12">
+                                        <label for="team" class="form-label">Team</label>
+                                        <select class="form-select" id="teams" name="teams" required>
+                                            {% for team in teamlist %}
+                                            <option value="{{team[0]}}">{{team[1]}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the team.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" id="city" name="city" placeholder=""
+                                            required>
+                                        <div class="invalid-feedback">
+                                            Please enter the city.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="date" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="date" name="date" placeholder=""
+                                            required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid date.
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-warning">Save changes</button>
+                            </div>
+                        </form>
+                        <script>
+                            (() => {
+                                'use strict'
+
+                                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                const forms = document.querySelectorAll('.needs-validation')
+
+                                // Loop over them and prevent submission
+                                Array.from(forms).forEach(form => {
+                                    form.addEventListener('submit', event => {
+                                        if (!form.checkValidity()) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                        }
+
+                                        form.classList.add('was-validated')
+                                    }, false)
+                                })
+                            })()
+                        </script>
+                        <!-- prevent from inputing future date -->
+                        <script>
+                            date.max = new Date().toISOString().split("T")[0];
+                        </script>
+                    </div>
                 </div>
-                {% endif %}
             </div>
+            <table class="table table-striped table-bordered border-100 table-responsive">
 
-            <!-- Events -->
-            <div class="col-md-7 col-lg-6">
+                <thead>
+                    <tr>
+                        <th>Member ID</th>
+                        <th>TeamName</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>City</th>
+                        <th>Birthdate</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% if searchresult1 != None %}
+                    {% for member in searchresult1 %}
+                    <tr>
+                        {% for entry in member %}
+                        {% if loop.index0 == 3 %}
+                        <td><u><b>{{entry}}</b></u></td>
+                        {% elif loop.index0 == 5 %}
+                        <td>{{entry}}</td>
+                        <td><button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
+                                data-bs-target="#edit-member-{{ member[0] }}">
+                                Edit
+                            </button>
+                            <!-- Edit members page -->
+                            <div class="modal fade" id="edit-member-{{ member[0] }}" tabindex="-1"
+                                aria-labelledby="member-name" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="member-name">{{member[2] +" "+
+                                                member[3]+" "}}</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form method="POST" action="{{ url_for('saveChangesMember') }}" id="edit-form"
+                                            class="needs-validation" novalidate>
+                                            <div class="modal-body">
+                                                <div class="row g-3">
+                                                    <div class="col-sm-12">
+                                                        <label for="memberid" class="form-label">MemberID</label>
+                                                        <input type="text" class="form-control" id="memberid"
+                                                            name="memberid" value="{{member[0]}}" readonly>
+                                                    </div>
 
-                <h3 class="text-body-emphasis fw-bold">All Events</h3>
-                <a class="btn btn-outline-warning px-4 mb-3" href="{{ url_for('addEvent') }}">Add a new event</a>
-                <table class="table table-striped table-bordered border-100">
+                                                    <div class="col-sm-6">
+                                                        <label for="firstName" class="form-label">First name</label>
+                                                        <input type="text" class="form-control" id="firstName"
+                                                            name="firstName" placeholder="{{member[2]}}" required>
+                                                        <div class="invalid-feedback">
+                                                            Valid first name is required.
+                                                        </div>
+                                                    </div>
 
-                    <thead>
-                        <tr>
-                            <th>Event ID</th>
-                            <th>EventName</th>
-                            <th>Sport</th>
-                            <th>NZTeam</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        {% if searchresult2 != None %}
-                        {% for event in searchresult2 %}
-                        <tr>
-                            {% for entry in event %}
-                            <td>{{entry}}</td>
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
+                                                    <div class="col-sm-6">
+                                                        <label for="lastName" class="form-label">Last name</label>
+                                                        <input type="text" class="form-control" id="lastName"
+                                                            name="lastName" placeholder="{{member[3]}}" required>
+                                                        <div class="invalid-feedback">
+                                                            Valid last name is required.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12">
+                                                        <label for="team" class="form-label">Team</label>
+                                                        <select class="form-select" id="teams" name="teams" required>
+                                                            {% for team in teamlist %}
+                                                            <option value="{{team[0]}}">{{team[1]}}</option>
+                                                            {%endfor%}
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Please select the team.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="city" class="form-label">City</label>
+                                                        <input type="text" class="form-control" id="city" name="city"
+                                                            placeholder="{{member[4]}}" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter the city.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="date" class="form-label">Date of Birth</label>
+                                                        <input type="date" class="form-control" id="dateedit"
+                                                            name="date" placeholder="" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a valid date.
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-warning">Save changes</button>
+                                            </div>
+                                        </form>
+                                        <script>
+                                            (() => {
+                                                'use strict'
+
+                                                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                                const forms = document.querySelectorAll('.needs-validation')
+
+                                                // Loop over them and prevent submission
+                                                Array.from(forms).forEach(form => {
+                                                    form.addEventListener('submit', event => {
+                                                        if (!form.checkValidity()) {
+                                                            event.preventDefault()
+                                                            event.stopPropagation()
+                                                        }
+
+                                                        form.classList.add('was-validated')
+                                                    }, false)
+                                                })
+                                            })()
+                                        </script>
+                                        <!-- prevent from inputing future date -->
+                                        <script>
+                                            dateedit.max = new Date().toISOString().split("T")[0];
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        {% else %}
+                        <td>{{entry}}</td>
                         {% endif %}
-                    </tbody>
-                </table>
 
-                {% if searchresult2 == None %}
-                <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-                    No result found from the database!
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Event Stages -->
-            <div class="col-md-7 col-lg-6">
-
-                <h3 class="text-body-emphasis fw-bold">All Stages</h3>
-                <a class="btn btn-outline-warning px-4 mb-3" href="{{ url_for('addEventStage') }}">Add a new stage</a>
-                <table class="table table-striped table-bordered border-100">
-
-                    <thead>
-                        <tr>
-                            <th>Stage ID</th>
-                            <th>Event</th>
-                            <th>Stage</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>Points to Qualify</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        {% if searchresult3 != None %}
-                        {% for event in searchresult3 %}
-                        <tr>
-                            {% for entry in event %}
-                            <td>{{entry}}</td>
-                            {% endfor %}
-                        </tr>
                         {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
 
-                {% if searchresult3 == None %}
-                <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-                    No result found from the database!
-                </div>
-                {% endif %}
+            {% if searchresult1 == None %}
+            <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+                No result found from the database!
             </div>
+            {% endif %}
+        </div>
+        <br />
+        <!-- Events -->
+        <div id="events" class="col-md-7 col-lg-6">
 
-            <!-- Stage Results -->
-            <div class="col-md-7 col-lg-6">
+            <h3 class="text-body-emphasis fw-bold">All Events</h3>
+            <button type="button" class="btn btn-warning px-4 mb-3" data-bs-toggle="modal"
+                data-bs-target="#add-event">Add a new event</button>
+            <!-- Add members page -->
+            <div class="modal fade" id="add-event" tabindex="-1" aria-labelledby="event" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="member-name">Add a new event!</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('addEvent') }}" id="edit-form" class="needs-validation"
+                            novalidate>
+                            <div class="modal-body">
+                                <div class="row g-3">
 
-                <h3 class="text-body-emphasis fw-bold">All Stage Results</h3>
-                <a class="btn btn-outline-warning px-4 mb-3" href="{{ url_for('addStageResults') }}">Add a new result</a>
-                <table class="table table-striped table-bordered border-100">
+                                    <div class="col-sm-6">
+                                        <label for="eventName" class="form-label">EventName</label>
+                                        <input type="text" class="form-control" id="eventName" name="eventName"
+                                            placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
+                                    </div>
 
-                    <thead>
-                        <tr>
-                            <th>Result ID</th>
-                            <th>Event</th>
-                            <th>Stage</th>
-                            <th>Athlete</th>
-                            <th>Points</th>
-                            <th>Position</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        {% if searchresult4 != None %}
-                        {% for event in searchresult4 %}
-                        <tr>
-                            {% for entry in event %}
-                            <td>{{entry}}</td>
-                            {% endfor %}
-                        </tr>
+                                    <div class="col-sm-6">
+                                        <label for="sport" class="form-label">Sport</label>
+                                        <input type="text" class="form-control" id="sport" name="sport"
+                                            placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Valid last name is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="team" class="form-label">Team</label>
+                                        <select class="form-select" id="teams" name="teams" required>
+                                            {% for team in teamlist %}
+                                            <option value="{{team[0]}}">{{team[1]}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the team.
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-warning">Save changes</button>
+                            </div>
+                        </form>
+                        <script>
+                            (() => {
+                                'use strict'
+
+                                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                const forms = document.querySelectorAll('.needs-validation')
+
+                                // Loop over them and prevent submission
+                                Array.from(forms).forEach(form => {
+                                    form.addEventListener('submit', event => {
+                                        if (!form.checkValidity()) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                        }
+
+                                        form.classList.add('was-validated')
+                                    }, false)
+                                })
+                            })()
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-bordered border-100 table-responsive">
+
+                <thead>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>EventName</th>
+                        <th>Sport</th>
+                        <th>NZTeam</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% if searchresult2 != None %}
+                    {% for event in searchresult2 %}
+                    <tr>
+                        {% for entry in event %}
+                        <td>{{entry}}</td>
                         {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
 
-                {% if searchresult4 == None %}
-                <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-                    No result found from the database!
-                </div>
-                {% endif %}
+            {% if searchresult2 == None %}
+            <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+                No result found from the database!
             </div>
+            {% endif %}
+        </div>
+        <br />
+        <!-- Event Stages -->
+        <div id="stages" class="col-md-7 col-lg-6">
 
+            <h3 class="text-body-emphasis fw-bold">All Stages</h3>
+            <a class="btn btn-warning px-4 mb-3" href="{{ url_for('addEventStage') }}">Add a new stage</a>
+            <table class="table table-striped table-bordered border-100 table-responsive">
+
+                <thead>
+                    <tr>
+                        <th>Stage ID</th>
+                        <th>Event</th>
+                        <th>Stage</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Points to Qualify</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% if searchresult3 != None %}
+                    {% for event in searchresult3 %}
+                    <tr>
+                        {% for entry in event %}
+                        <td>{{entry}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            {% if searchresult3 == None %}
+            <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+                No result found from the database!
+            </div>
+            {% endif %}
+        </div>
+        <br />
+        <!-- Stage Results -->
+        <div id="results" class="col-md-7 col-lg-6">
+
+            <h3 class="text-body-emphasis fw-bold">All Stage Results</h3>
+            <a class="btn btn-warning px-4 mb-3" href="{{ url_for('addStageResults') }}">Add a new
+                result</a>
+            <table class="table table-striped table-bordered border-100 table-responsive">
+
+                <thead>
+                    <tr>
+                        <th>Result ID</th>
+                        <th>Event</th>
+                        <th>Stage</th>
+                        <th>Athlete</th>
+                        <th>Points</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% if searchresult4 != None %}
+                    {% for event in searchresult4 %}
+                    <tr>
+                        {% for entry in event %}
+                        <td>{{entry}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            {% if searchresult4 == None %}
+            <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+                No result found from the database!
+            </div>
+            {% endif %}
         </div>
     </div>
 

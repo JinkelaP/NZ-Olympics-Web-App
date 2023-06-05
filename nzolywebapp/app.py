@@ -217,9 +217,12 @@ def databaseResetSQL():
 @app.route("/admin/Edit")
 def edit():
     connection = getCursor()
-    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName FROM members \
+
+    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate FROM members \
                 JOIN teams ON teams.TeamID = members.TeamID;")
     searchResult1 = connection.fetchall()
+
+    dateConvert(searchResult1,5)
 
     if searchResult1 == []:
         searchResult1 = None
@@ -283,22 +286,59 @@ def edit():
 
     for list in searchResult4:
             del list[-1:]
-
     
+    connection.execute("SELECT * FROM teams;")
+    teamList = connection.fetchall()
 
-    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, searchresult4 = searchResult4)
+    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, searchresult4 = searchResult4, teamlist = teamList)
+
+@app.route("/admin/save_changes_member", methods=['POST'])
+def saveChangesMember():
+    memberID = request.form.get('memberid')
+    firstName = request.form.get('firstName')
+    lastName = request.form.get('lastName')
+    city = request.form.get('city')
+    birthDate = request.form.get('date')
+    teamID = request.form.get("teams")
+
+    connection = getCursor()
+    connection.execute("UPDATE members \
+                       SET TeamID = %s, FirstName = %s, LastName = %s, City = %s, Birthdate = %s\
+                       WHERE MemberID = %s;",(teamID,firstName,lastName,city,birthDate,memberID))
+
+    return redirect("/admin/Edit")
+
+@app.route("/admin/add_member", methods=['POST'])
+def addMember():
+    firstName = request.form.get('firstName')
+    lastName = request.form.get('lastName')
+    city = request.form.get('city')
+    birthDate = request.form.get('date')
+    teamID = request.form.get("teams")
+
+    connection = getCursor()
+    connection.execute("INSERT INTO members \
+                       (teamID, FirstName, LastName, City, Birthdate)\
+                       VALUES (%s, %s, %s, %s, %s);",(teamID,firstName,lastName,city,birthDate))
+
+    return redirect("/admin/Edit")
 
 @app.route("/admin/medals")
 def showMedals():
     pass
 
-@app.route("/admin/member_add")
-def addMember():
-    pass
-
-@app.route("/admin/event_add")
+@app.route("/admin/event_add", methods=['POST'])
 def addEvent():
-    pass
+    eventName = request.form.get('eventName')
+    sport = request.form.get('sport')
+    teamID = request.form.get("teams")
+
+    connection = getCursor()
+    connection.execute("INSERT INTO events \
+                       (EventName, Sport, NZTeam)\
+                       VALUES (%s, %s, %s);",(eventName, sport, teamID))
+
+    return redirect("/admin/Edit")
 
 @app.route("/admin/event_stage_add")
 def addEventStage():
