@@ -32,13 +32,13 @@ def memberIDValid(member_id):
         if id[0] == member_id:
             return True
         
-# date convert function
+# date convert function, but actually also convert tuples to lists
 
-def dateConvert(mySQLConnect):
+def dateConvert(mySQLConnect, x):
     while type(mySQLConnect[0]) == tuple:
         listTupleInfo = list(mySQLConnect[0])
-        if listTupleInfo[2] is not None:
-            listTupleInfo[2] = listTupleInfo[2].strftime("%d/%m/%Y")
+        if type(x) == int:
+            listTupleInfo[x] = listTupleInfo[x].strftime("%d/%m/%Y")
         mySQLConnect.append(listTupleInfo)
         mySQLConnect.pop(0)
                 
@@ -83,7 +83,7 @@ def memberPage(member_id):
         upcomingList = connection.fetchall()
         # convert date
         if upcomingList != []:
-            dateConvert(upcomingList)
+            dateConvert(upcomingList,2)
         else:
             upcomingList = None
 
@@ -97,7 +97,7 @@ def memberPage(member_id):
         
         if previousListFull != []:
         # convert date
-            dateConvert(previousListFull)
+            dateConvert(previousListFull,2)
       
         # convert positions to medals or qualifying status
         for memberResult in previousListFull:
@@ -107,7 +107,7 @@ def memberPage(member_id):
                 memberResult[5] = 'Silver'
             elif memberResult[5] == 1:
                 memberResult[5] = 'Gold'
-            elif 'quali' or 'heat' in memberResult[4].lower():
+            elif memberResult[5] == None:
 
                 memberPoints = memberResult[6]
                 connection.execute(f'SELECT event_stage.PointsToQualify FROM event_stage \
@@ -231,24 +231,66 @@ def edit():
     if searchResult2 == []:
         searchResult2 = None
 
-    connection.execute("SELECT event_stage.StageID, event_stage.StageName, event_stage.StageDate, events.EventName, event_stage.Location, \
-                        event_stage.Qualifying, event_stage.PointsToQualify FROM event_stage \
+    connection.execute("SELECT event_stage.StageID, events.EventName, event_stage.StageName, event_stage.StageDate, event_stage.Location, \
+                        event_stage.PointsToQualify FROM event_stage \
                         JOIN events ON events.EventID = event_stage.EventID;")
     searchResult3 = connection.fetchall()
 
     if searchResult3 == []:
         searchResult3 = None
     else:
-        dateConvert(searchResult3)
+        dateConvert(searchResult3,3)
+    
+    for memberResult in searchResult3:
+            if memberResult[5] == None:
+                memberResult[5] = 'N/A'
 
-    for eventStage in searchResult3:
-        if eventStage[5] == 1:
-            eventStage[5] = 'Yes'
-        elif eventStage[5] == 0:
-            eventStage[5] = 'No'
+    connection.execute("SELECT event_stage_results.ResultID, events.EventName, event_stage.StageName, members.FirstName, \
+                       event_stage_results.PointsScored, event_stage_results.Position, event_stage_results.StageID\
+                        FROM event_stage_results\
+                        JOIN event_stage ON event_stage.StageID=event_stage_results.StageID\
+                        JOIN members ON members.MemberID=event_stage_results.MemberID\
+                        JOIN events ON events.EventID = event_stage.EventID;")
+    searchResult4 = connection.fetchall()
 
+    dateConvert(searchResult4,None)
 
-    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3)
+    if searchResult4 == []:
+        searchResult4 = None
+    
+    for memberResult in searchResult4:
+
+            if memberResult[5] == 3:
+                memberResult[5] = 'Bronze'
+            elif memberResult[5] == 2:
+                memberResult[5] = 'Silver'
+            elif memberResult[5] == 1:
+                memberResult[5] = 'Gold'
+
+            elif memberResult[5] == None:
+                memberPoints = memberResult[4]
+                connection.execute(f'SELECT event_stage.PointsToQualify FROM event_stage \
+                                    WHERE event_stage.StageID = {memberResult[6]};')
+                qualiPoints = connection.fetchall()[0][0]
+                
+                if type(memberPoints) is float and type(qualiPoints) is float:
+                    if memberPoints >= qualiPoints:
+                        memberResult[5] = 'Qualified'
+                    else:
+                        memberResult[5] = 'Not Qualified'
+                else:
+                    memberResult[5] = 'N/A'
+
+    for list in searchResult4:
+            del list[-1:]
+
+    
+
+    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, searchresult4 = searchResult4)
+
+@app.route("/admin/medals")
+def showMedals():
+    pass
 
 @app.route("/admin/member_add")
 def addMember():
@@ -256,4 +298,12 @@ def addMember():
 
 @app.route("/admin/event_add")
 def addEvent():
+    pass
+
+@app.route("/admin/event_stage_add")
+def addEventStage():
+    pass
+
+@app.route("/admin/event_stage_results_add")
+def addStageResults():
     pass
