@@ -341,9 +341,6 @@ def addMember():
 
     return redirect("/admin/Edit#members")
 
-@app.route("/admin/medals")
-def showMedals():
-    pass
 
 @app.route("/admin/event_add", methods=['POST'])
 def addEvent():
@@ -393,3 +390,38 @@ def addResult():
                        (StageID, MemberID, PointsScored, Position)\
                        VALUES (%s, %s, %s, %s);",(stageID, memberID, pointsS,position))
     return redirect("/admin/Edit#results")
+
+
+@app.route("/admin/medals")
+def showMedals():
+    
+    connection = getCursor()
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    goldCOUNT = connection.fetchall()
+
+    connection.execute("SELECT members.FirstName, members.LastName FROM event_stage_results \
+                        JOIN members ON members.MemberID = event_stage_results.MemberID \
+                        WHERE Position = 1;")
+    goldHolder = connection.fetchall()
+
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    silverCOUNT = connection.fetchall()
+
+    connection.execute("SELECT members.FirstName, members.LastName FROM event_stage_results \
+                        JOIN members ON members.MemberID = event_stage_results.MemberID \
+                        WHERE Position = 2;")
+    silverHolder = connection.fetchall()
+
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    bronzeCOUNT = connection.fetchall()
+
+    connection.execute("SELECT members.FirstName, members.LastName FROM event_stage_results \
+                        JOIN members ON members.MemberID = event_stage_results.MemberID \
+                        WHERE Position = 3;")
+    bronzeHolder = connection.fetchall()
+
+
+
+    return render_template("medal.html", goldcount = goldCOUNT, goldholder = goldHolder, \
+                           silvercount = silverCOUNT, silverholder = silverHolder, \
+                           bronzecount = bronzeCOUNT, bronzeholder = bronzeHolder)
