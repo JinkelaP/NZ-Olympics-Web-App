@@ -48,20 +48,26 @@ def dateConvert(mySQLConnect, x):
 def pageNotFound(error):
     return render_template('404.html'), 404
 
+#The index page of the web app
 @app.route("/")
 def home():
     return render_template("index.html")
 
+#The page shows all members
 @app.route("/member")
 def member():
     connection = getCursor()
-    connection.execute("SELECT  members.MemberID, members.FirstName, members.LastName, teams.TeamName, members.City, members.Birthdate \
+    connection.execute("SELECT members.FirstName, members.LastName, teams.TeamName, members.City, members.Birthdate, members.MemberID \
                        FROM members \
                        INNER JOIN teams ON members.teamID=teams.TeamID \
                        ORDER BY members.MemberID;")
     memberList = connection.fetchall()
+
+    dateConvert(memberList, None)
+
     return render_template("memberlist.html", memberlist = memberList)
 
+# The page shows the events that the member take part in previously and in the future
 @app.route("/member/<int:member_id>")
 def memberPage(member_id):
     if memberIDValid(member_id) == True:
@@ -138,7 +144,7 @@ def memberPage(member_id):
 def event():
     connection = getCursor()
     # connection.execute("SELECT * FROM events;")
-    connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName \
+    connection.execute("SELECT events.EventName, events.Sport, teams.TeamName \
                        FROM events \
                        INNER JOIN teams ON events.NZTeam=teams.TeamID \
                        ORDER BY events.EventID;")
@@ -148,11 +154,12 @@ def event():
         eventList = None
     return render_template("eventlist.html", eventlist = eventList)
 
-
+# This is the admin page of the web app
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
 
+# This page provide search function
 @app.route("/admin/search", methods=["GET"])
 def search():
     searchInput = request.args.get('searchinput')
@@ -178,28 +185,31 @@ def search():
 
     return render_template("search.html", searchresult1 = searchResult1, searchresult2 = searchResult2, searchinput = searchInput)
 
-@app.route("/admin/member-edit/<int:member_id>")
-def memberEditPage(member_id):
-    if memberIDValid(member_id) == True:
-        
-        connection = getCursor()
-        connection.execute("SELECT members.MemberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate \
-                           FROM members\
-                           JOIN teams ON teams.TeamID = members.TeamID\
-                           WHERE members.MemberID=%s;", (member_id,))
-        memberInfo = connection.fetchall()
+#This page is no longer in use
 
-        nameMember = memberInfo[0][2] + ' ' + memberInfo[0][3]
-    else:
-        return render_template("404.html")
+# @app.route("/admin/member-edit/<int:member_id>")
+# def memberEditPage(member_id):
+#     if memberIDValid(member_id) == True:
         
-    return render_template("member_edit.html",namemember = nameMember,memberinfo = memberInfo, memberid = member_id)
+#         connection = getCursor()
+#         connection.execute("SELECT members.MemberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate \
+#                            FROM members\
+#                            JOIN teams ON teams.TeamID = members.TeamID\
+#                            WHERE members.MemberID=%s;", (member_id,))
+#         memberInfo = connection.fetchall()
 
+#         nameMember = memberInfo[0][2] + ' ' + memberInfo[0][3]
+#     else:
+#         return render_template("404.html")
+        
+#     return render_template("member_edit.html",namemember = nameMember,memberinfo = memberInfo, memberid = member_id)
+
+# This page reset the database for easier test
 @app.route("/admin/database_reset")
 def databaseReset():
     return render_template("database_reset.html")
 
-
+# database reset
 @app.route("/admin/database_reset/loading")
 def databaseResetSQL():
     connection = getCursor()
@@ -213,7 +223,7 @@ def databaseResetSQL():
     
     return redirect(url_for('admin'))
 
-
+# This is the whole edit page allowing admin to edit everything
 @app.route("/admin/Edit")
 def edit():
     connection = getCursor()
@@ -310,6 +320,7 @@ def edit():
                            searchresult4 = searchResult4, teamlist = teamList, eventlist = eventList, eventliststage = eventListStage, \
                             eventstagelist = eventStageList, searchresult1b = searchResult1b)
 
+# Update member info
 @app.route("/admin/save_changes_member", methods=['POST'])
 def saveChangesMember():
     memberID = request.form.get('memberid')
@@ -326,6 +337,7 @@ def saveChangesMember():
 
     return redirect("/admin/Edit")
 
+# Add member
 @app.route("/admin/add_member", methods=['POST'])
 def addMember():
     firstName = request.form.get('firstName').lower().capitalize()
@@ -341,7 +353,7 @@ def addMember():
 
     return redirect("/admin/Edit#members")
 
-
+# Add event
 @app.route("/admin/event_add", methods=['POST'])
 def addEvent():
     eventName = request.form.get('eventName')
@@ -355,6 +367,7 @@ def addEvent():
 
     return redirect("/admin/Edit#events")
 
+# Add stage
 @app.route("/admin/event_stage_add", methods=['POST'])
 def addStage():
     eventID = request.form.get('eventStage')
@@ -391,10 +404,10 @@ def addResult():
                        VALUES (%s, %s, %s, %s);",(stageID, memberID, pointsS,position))
     return redirect("/admin/Edit#results")
 
-
+# Add medals
 @app.route("/admin/medals")
 def showMedals():
-    
+    # Get info of medal amount and medal holder separately
     connection = getCursor()
     connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
     goldCOUNT = connection.fetchall()

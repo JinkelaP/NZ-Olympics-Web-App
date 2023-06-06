@@ -119,7 +119,6 @@
 
                 <thead>
                     <tr>
-                        <th>Member ID</th>
                         <th>TeamName</th>
                         <th>FirstName</th>
                         <th>LastName</th>
@@ -132,7 +131,8 @@
                     {% for member in searchresult1 %}
                     <tr>
                         {% for entry in member %}
-                        {% if loop.index0 == 3 %}
+                        {% if loop.index0 == 0 %}
+                        {% elif loop.index0 == 3 %}
                         <td><u><b>{{entry}}</b></u></td>
                         {% elif loop.index0 == 5 %}
                         <td>{{entry}}</td>
@@ -348,7 +348,6 @@
 
                 <thead>
                     <tr>
-                        <th>Event ID</th>
                         <th>EventName</th>
                         <th>Sport</th>
                         <th>NZTeam</th>
@@ -359,7 +358,10 @@
                     {% for event in searchresult2 %}
                     <tr>
                         {% for entry in event %}
+                        {% if loop.index0 == 0 %}
+                        {% else %}
                         <td>{{entry}}</td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}
@@ -503,7 +505,6 @@
 
                 <thead>
                     <tr>
-                        <th>Stage ID</th>
                         <th>Event</th>
                         <th>Stage</th>
                         <th>Date</th>
@@ -516,7 +517,10 @@
                     {% for event in searchresult3 %}
                     <tr>
                         {% for entry in event %}
+                        {% if loop.index0 == 0 %}
+                        {% else %}
                         <td>{{entry}}</td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}
@@ -648,7 +652,6 @@
 
                 <thead>
                     <tr>
-                        <th>Result ID</th>
                         <th>Event</th>
                         <th>Stage</th>
                         <th>Athlete</th>
@@ -661,7 +664,10 @@
                     {% for event in searchresult4 %}
                     <tr>
                         {% for entry in event %}
+                        {% if loop.index0 == 0 %}
+                        {% else %}
                         <td>{{entry}}</td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}
