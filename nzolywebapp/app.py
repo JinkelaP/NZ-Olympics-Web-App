@@ -227,6 +227,8 @@ def edit():
     if searchResult1 == []:
         searchResult1 = None
 
+    searchResult1b = searchResult1
+
     connection.execute("SELECT events.EventID, events.EventName, events.Sport, teams.TeamName FROM events \
                 JOIN teams ON teams.TeamID = events.NZTeam;")
     searchResult2 = connection.fetchall()
@@ -290,14 +292,30 @@ def edit():
     connection.execute("SELECT * FROM teams;")
     teamList = connection.fetchall()
 
-    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, searchresult4 = searchResult4, teamlist = teamList)
+    connection.execute("SELECT event_stage.StageID, event_stage.EventID, events.EventName, event_stage.StageName, event_stage.StageDate, event_stage.Location, \
+                        event_stage.PointsToQualify FROM event_stage \
+                        JOIN events ON events.EventID = event_stage.EventID;")
+    eventList = connection.fetchall()
+
+    connection.execute("SELECT events.EventID, events.EventName FROM events;")
+    eventListStage = connection.fetchall()
+
+    connection.execute("SELECT event_stage.StageID, events.EventName,event_stage.StageName FROM event_stage \
+                       JOIN events ON events.EventID = event_stage.EventID;")
+    eventStageList = connection.fetchall()
+
+
+
+    return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, \
+                           searchresult4 = searchResult4, teamlist = teamList, eventlist = eventList, eventliststage = eventListStage, \
+                            eventstagelist = eventStageList, searchresult1b = searchResult1b)
 
 @app.route("/admin/save_changes_member", methods=['POST'])
 def saveChangesMember():
     memberID = request.form.get('memberid')
-    firstName = request.form.get('firstName')
-    lastName = request.form.get('lastName')
-    city = request.form.get('city')
+    firstName = request.form.get('firstName').lower().capitalize()
+    lastName = request.form.get('lastName').lower().capitalize()
+    city = request.form.get('city').lower().capitalize()
     birthDate = request.form.get('date')
     teamID = request.form.get("teams")
 
@@ -310,9 +328,9 @@ def saveChangesMember():
 
 @app.route("/admin/add_member", methods=['POST'])
 def addMember():
-    firstName = request.form.get('firstName')
-    lastName = request.form.get('lastName')
-    city = request.form.get('city')
+    firstName = request.form.get('firstName').lower().capitalize()
+    lastName = request.form.get('lastName').lower().capitalize()
+    city = request.form.get('city').lower().capitalize()
     birthDate = request.form.get('date')
     teamID = request.form.get("teams")
 
@@ -321,7 +339,7 @@ def addMember():
                        (teamID, FirstName, LastName, City, Birthdate)\
                        VALUES (%s, %s, %s, %s, %s);",(teamID,firstName,lastName,city,birthDate))
 
-    return redirect("/admin/Edit")
+    return redirect("/admin/Edit#members")
 
 @app.route("/admin/medals")
 def showMedals():
@@ -338,12 +356,40 @@ def addEvent():
                        (EventName, Sport, NZTeam)\
                        VALUES (%s, %s, %s);",(eventName, sport, teamID))
 
-    return redirect("/admin/Edit")
+    return redirect("/admin/Edit#events")
 
-@app.route("/admin/event_stage_add")
-def addEventStage():
-    pass
+@app.route("/admin/event_stage_add", methods=['POST'])
+def addStage():
+    eventID = request.form.get('eventStage')
+    stage = request.form.get('stageEvent')
+    date = request.form.get('datestage')
+    location = request.form.get('location')
+    pointsQ = request.form.get('pointsQ')
 
-@app.route("/admin/event_stage_results_add")
-def addStageResults():
-    pass
+    if stage == 'Final':
+        isQualify = 0
+        pointsQ = None
+    else:
+        isQualify = 1
+
+    connection = getCursor()
+    connection.execute("INSERT INTO event_stage \
+                       (StageName, EventID, Location, StageDate, Qualifying, PointsToQualify)\
+                       VALUES (%s, %s, %s, %s, %s, %s);",(stage, eventID, location, date, isQualify, pointsQ ))
+    return redirect("/admin/Edit#stages")
+
+@app.route("/admin/event_stage_results_add", methods=['POST'])
+def addResult():
+    stageID = request.form.get('eventStage2')
+    memberID = request.form.get('memberSelect')
+    pointsS = request.form.get('pointsS')
+    position = request.form.get('position')
+
+    if position == '':
+        position = None
+    
+    connection = getCursor()
+    connection.execute("INSERT INTO event_stage_results \
+                       (StageID, MemberID, PointsScored, Position)\
+                       VALUES (%s, %s, %s, %s);",(stageID, memberID, pointsS,position))
+    return redirect("/admin/Edit#results")

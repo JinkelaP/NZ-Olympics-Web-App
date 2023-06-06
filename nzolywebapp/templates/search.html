@@ -23,6 +23,7 @@
 
                 <h3 class="text-body-emphasis fw-bold">Results in members</h3>
                 <p class="lead">Ordered by team & lastname</p>
+                <a href="{{ url_for('edit') }}"><button class="btn btn-warning my-2">Edit</button></a>
                 <table class="table table-striped table-bordered border-100">
 
                     <thead>
@@ -40,8 +41,6 @@
                             {% for entry in member %}
                             {% if loop.index0 == 3 %}
                             <td><u><b>{{entry}}</b></u></td>
-                            <td><a href="{{ url_for('memberEditPage', member_id=member[0]) }}"><button
-                                        class="btn btn-outline-warning">Edit</button></a></td>
                             {% else %}
                             <td>{{entry}}</td>
                             {% endif %}
@@ -67,6 +66,7 @@
 
             <div class="col-md-7 col-lg-6">
                 <h3 class="text-body-emphasis fw-bold">Results in events</h3>
+                <a href="{{ url_for('edit') }}"><button class="btn btn-warning my-2">Edit</button></a>
                 <table class="table table-striped table-bordered border-100">
 
                     <thead>

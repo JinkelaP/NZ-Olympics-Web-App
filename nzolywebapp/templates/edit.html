@@ -35,7 +35,7 @@
                                     <div class="col-sm-6">
                                         <label for="firstName" class="form-label">First name</label>
                                         <input type="text" class="form-control" id="firstName" name="firstName"
-                                            placeholder="" required>
+                                            placeholder="" pattern="^[a-zA-Z]*$" required>
                                         <div class="invalid-feedback">
                                             Valid first name is required.
                                         </div>
@@ -44,7 +44,7 @@
                                     <div class="col-sm-6">
                                         <label for="lastName" class="form-label">Last name</label>
                                         <input type="text" class="form-control" id="lastName" name="lastName"
-                                            placeholder="" required>
+                                            placeholder="" pattern="^[a-zA-Z]*$" required>
                                         <div class="invalid-feedback">
                                             Valid last name is required.
                                         </div>
@@ -53,6 +53,7 @@
                                     <div class="col-12">
                                         <label for="team" class="form-label">Team</label>
                                         <select class="form-select" id="teams" name="teams" required>
+                                            <option value="" disabled selected>Please select</option>
                                             {% for team in teamlist %}
                                             <option value="{{team[0]}}">{{team[1]}}</option>
                                             {%endfor%}
@@ -65,7 +66,7 @@
                                     <div class="col-md-6">
                                         <label for="city" class="form-label">City</label>
                                         <input type="text" class="form-control" id="city" name="city" placeholder=""
-                                            required>
+                                        pattern="^[a-zA-Z]*$" required>
                                         <div class="invalid-feedback">
                                             Please enter the city.
                                         </div>
@@ -163,7 +164,7 @@
                                                     <div class="col-sm-6">
                                                         <label for="firstName" class="form-label">First name</label>
                                                         <input type="text" class="form-control" id="firstName"
-                                                            name="firstName" placeholder="{{member[2]}}" required>
+                                                            name="firstName" placeholder="{{member[2]}} " pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
                                                         <div class="invalid-feedback">
                                                             Valid first name is required.
                                                         </div>
@@ -172,7 +173,7 @@
                                                     <div class="col-sm-6">
                                                         <label for="lastName" class="form-label">Last name</label>
                                                         <input type="text" class="form-control" id="lastName"
-                                                            name="lastName" placeholder="{{member[3]}}" required>
+                                                            name="lastName" placeholder="{{member[3]}}" pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
                                                         <div class="invalid-feedback">
                                                             Valid last name is required.
                                                         </div>
@@ -181,6 +182,7 @@
                                                     <div class="col-12">
                                                         <label for="team" class="form-label">Team</label>
                                                         <select class="form-select" id="teams" name="teams" required>
+                                                            <option value="" disabled selected>Please select</option>
                                                             {% for team in teamlist %}
                                                             <option value="{{team[0]}}">{{team[1]}}</option>
                                                             {%endfor%}
@@ -193,7 +195,7 @@
                                                     <div class="col-md-6">
                                                         <label for="city" class="form-label">City</label>
                                                         <input type="text" class="form-control" id="city" name="city"
-                                                            placeholder="{{member[4]}}" required>
+                                                            placeholder="{{member[4]}}" pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
                                                         <div class="invalid-feedback">
                                                             Please enter the city.
                                                         </div>
@@ -268,7 +270,7 @@
             <h3 class="text-body-emphasis fw-bold">All Events</h3>
             <button type="button" class="btn btn-warning px-4 mb-3" data-bs-toggle="modal"
                 data-bs-target="#add-event">Add a new event</button>
-            <!-- Add members page -->
+            <!-- Add events page -->
             <div class="modal fade" id="add-event" tabindex="-1" aria-labelledby="event" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -284,24 +286,25 @@
                                     <div class="col-sm-6">
                                         <label for="eventName" class="form-label">EventName</label>
                                         <input type="text" class="form-control" id="eventName" name="eventName"
-                                            placeholder="" required>
+                                            placeholder="" pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
                                         <div class="invalid-feedback">
-                                            Valid first name is required.
+                                            Valid event name is required.
                                         </div>
                                     </div>
 
                                     <div class="col-sm-6">
                                         <label for="sport" class="form-label">Sport</label>
-                                        <input type="text" class="form-control" id="sport" name="sport"
-                                            placeholder="" required>
+                                        <input type="text" class="form-control" id="sport" name="sport" placeholder=""
+                                        pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
                                         <div class="invalid-feedback">
-                                            Valid last name is required.
+                                            Valid sport name is required.
                                         </div>
                                     </div>
 
                                     <div class="col-12">
                                         <label for="team" class="form-label">Team</label>
                                         <select class="form-select" id="teams" name="teams" required>
+                                            <option value="" disabled selected>Please select</option>
                                             {% for team in teamlist %}
                                             <option value="{{team[0]}}">{{team[1]}}</option>
                                             {%endfor%}
@@ -375,7 +378,127 @@
         <div id="stages" class="col-md-7 col-lg-6">
 
             <h3 class="text-body-emphasis fw-bold">All Stages</h3>
-            <a class="btn btn-warning px-4 mb-3" href="{{ url_for('addEventStage') }}">Add a new stage</a>
+            <button type="button" class="btn btn-warning px-4 mb-3" data-bs-toggle="modal"
+                data-bs-target="#add-stage">Add a new stage</button>
+            <!-- Add stages page -->
+            <div class="modal fade" id="add-stage" tabindex="-1" aria-labelledby="stage-name" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="stage-name">Add a new stage!</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('addStage') }}" id="edit-form" class="needs-validation"
+                            novalidate>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label for="event" class="form-label">Event</label>
+                                        <select class="form-select" id="eventStage" name="eventStage" required>
+                                            <option value="" disabled selected>Please select</option>
+                                            {% for eventS in eventliststage %}
+                                            <option value="{{eventS[0]}}">{{eventS[1]}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the event.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="stage" class="form-label">Stage</label>
+                                        <select class="form-select" id="stageEvent" name="stageEvent"
+                                            onChange="toggleInput()" required>
+                                            <option value="" disabled selected>Please select</option>
+                                            <option value="Heat 1" id="h1">Heat 1</option>
+                                            <option value="Heat 2" id="h2">Heat 2</option>
+                                            <option value="Qualification" id="quali">Qualification</option>
+                                            <option value="Final" id="final">Final</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the stage.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="datestage" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="datestage" name="datestage"
+                                            placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid date.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="location" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="location" name="location"
+                                            placeholder="" pattern="^(?=.*[a-zA-Z])[a-zA-Z\s]*$" required>
+                                        <div class="invalid-feedback">
+                                            Valid location is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="location" class="form-label">Points to Qualify</label>
+                                        <input type="text" class="form-control" id="pointsQ" name="pointsQ"
+                                            placeholder="" value="" pattern="[0-9]+(\.[0-9]{1,2})?" required>
+                                        <div class="invalid-feedback">
+                                            Valid points is required. Can have two decimals. Not available for final.
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-warning">Save changes</button>
+                            </div>
+                        </form>
+                        <script>
+                                (() => {
+                                    'use strict'
+
+                                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                    const forms = document.querySelectorAll('.needs-validation')
+
+                                    // Loop over them and prevent submission
+                                    Array.from(forms).forEach(form => {
+                                        form.addEventListener('submit', event => {
+                                            if (!form.checkValidity()) {
+                                                event.preventDefault()
+                                                event.stopPropagation()
+                                            }
+
+                                            form.classList.add('was-validated')
+                                        }, false)
+                                    })
+                                })()
+                        </script>
+                        <!-- prevent from inputing future date -->
+                        <script>
+                            datestage.max = new Date().toISOString().split("T")[0];
+                        </script>
+                        <!-- ban points to qualify if stage is final. -->
+                        <script>
+                            function toggleInput() {
+                                var selectElement = document.getElementById("stageEvent");
+                                var inputElement = document.getElementById("pointsQ");
+
+                                if (selectElement.value === "Final") {
+                                    inputElement.disabled = true;
+                                    inputElement.value = "";
+                                } else {
+                                    inputElement.disabled = false;
+                                    inputElement.value = "";
+                                }
+                            }
+                        </script>
+
+                    </div>
+                </div>
+            </div>
             <table class="table table-striped table-bordered border-100 table-responsive">
 
                 <thead>
@@ -412,8 +535,115 @@
         <div id="results" class="col-md-7 col-lg-6">
 
             <h3 class="text-body-emphasis fw-bold">All Stage Results</h3>
-            <a class="btn btn-warning px-4 mb-3" href="{{ url_for('addStageResults') }}">Add a new
-                result</a>
+            <button type="button" class="btn btn-warning px-4 mb-3" data-bs-toggle="modal"
+                data-bs-target="#add-result">Add a new result</button>
+            <!-- Add result page -->
+            <div class="modal fade" id="add-result" tabindex="-1" aria-labelledby="stage-result" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="stage-result">Add a new result!</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('addResult') }}" id="edit-form" class="needs-validation"
+                            novalidate>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label for="stage" class="form-label">Event</label>
+                                        <select class="form-select" id="eventStage2" name="eventStage2" required onchange="toggleInput2()">
+                                            <option value="" disabled selected>Please select</option>
+                                            {% for events in eventstagelist %}
+                                            <option value="{{events[0]}}">{{events[1]}} {{events[2]}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the stage.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="member" class="form-label">Member</label>
+                                        <select class="form-select" id="memberSelect" name="memberSelect" required>
+                                            <option value="" disabled selected>Please select</option>
+                                            {% for members in searchresult1b %}
+                                            <option value="{{members[0]}}">{{members[2]}} {{members[3]}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select the member.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="points" class="form-label">Points Scored</label>
+                                        <input type="text" class="form-control" id="pointsS" name="pointsS"
+                                            placeholder="" value="" pattern="[0-9]+(\.[0-9]{1,2})?" required>
+                                        <div class="invalid-feedback">
+                                            Valid points is required. Can have two decimal.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="position" class="form-label">Position</label>
+                                        <input type="text" class="form-control" id="position" name="position"
+                                            placeholder="" value="" pattern="^[0-9]*$" required>
+                                        <div class="invalid-feedback">
+                                            Valid position is required. Integer only.
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-warning">Save changes</button>
+                            </div>
+                        </form>
+                        <script>
+                            (() => {
+                                'use strict'
+
+                                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                const forms = document.querySelectorAll('.needs-validation')
+
+                                // Loop over them and prevent submission
+                                Array.from(forms).forEach(form => {
+                                    form.addEventListener('submit', event => {
+                                        if (!form.checkValidity()) {
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                        }
+
+                                        form.classList.add('was-validated')
+                                    }, false)
+                                })
+                            })()
+                        </script>
+                    
+                        <!-- ban position if stage is not final. -->
+                        <script>
+                            function toggleInput2() {
+                                var selectElement = document.getElementById("eventStage2");
+                                var inputElement = document.getElementById("position");
+
+                                var selectedText = selectElement.options[selectElement.selectedIndex].text;
+
+                                if (!selectedText.includes("Final")) {
+                                    inputElement.disabled = true;
+                                    inputElement.value = "";
+                                } else {
+                                    inputElement.disabled = false;
+                                    inputElement.value = "";
+                                }
+                            }
+                        </script>
+
+                    </div>
+                </div>
+            </div>
             <table class="table table-striped table-bordered border-100 table-responsive">
 
                 <thead>
