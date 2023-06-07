@@ -28,12 +28,10 @@
 
       <div class="collapse navbar-collapse" id="navbars-NZOly">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a href="/"
-            class="nav-link active">Return to Mainpage</a></li>
-          <li class="nav-item"><a href="{{ url_for('event') }}"
-              class="nav-link {% block eventlist_active %}{% endblock %}">List Events</a></li>
-          <li class="nav-item"><a href="{{ url_for('member') }}"
-              class="nav-link {% block memberlist_active %}{% endblock %}">List Team Members</a></li>
+          <li class="nav-item"><a href="{{ url_for('edit') }}"
+              class="nav-link {% block edit_active %}{% endblock %}">Add/Edit</a></li>
+          <li class="nav-item"><a href="{{ url_for('showMedals') }}"
+              class="nav-link {% block medal_active %}{% endblock %}">Medals</a></li>
         </ul>
 
       </div>

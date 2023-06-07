@@ -228,7 +228,7 @@ def databaseResetSQL():
 def edit():
     connection = getCursor()
 
-    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate FROM members \
+    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate, members.TeamID FROM members \
                 JOIN teams ON teams.TeamID = members.TeamID;")
     searchResult1 = connection.fetchall()
 
@@ -314,11 +314,13 @@ def edit():
                        JOIN events ON events.EventID = event_stage.EventID;")
     eventStageList = connection.fetchall()
 
+    # restrict that the user cannot choose a future date
+    today = datetime.today().strftime('%Y-%m-%d')
 
 
     return render_template("edit.html",searchresult1 = searchResult1, searchresult2 = searchResult2, searchresult3 = searchResult3, \
                            searchresult4 = searchResult4, teamlist = teamList, eventlist = eventList, eventliststage = eventListStage, \
-                            eventstagelist = eventStageList, searchresult1b = searchResult1b)
+                            eventstagelist = eventStageList, searchresult1b = searchResult1b, today = today)
 
 # Update member info
 @app.route("/admin/save_changes_member", methods=['POST'])
