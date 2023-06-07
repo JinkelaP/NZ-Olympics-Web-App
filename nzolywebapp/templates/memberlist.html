@@ -12,8 +12,7 @@
 <table class="table table-bordered border-100 table-striped">
     <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>Team</th>
             <th>City</th>
             <th>Birthdate</th>
@@ -35,7 +34,8 @@
         <tr>
             {% for entry in member %}
             {% if loop.index0 == 0 %}
-            <td><a href="{{ url_for('memberPage', member_id=member[5]) }}">{{ entry }}</a></td>
+            <td><a href="{{ url_for('memberPage', member_id=member[5]) }}">{{ entry }} {{member[1]}}</a></td>
+            {% elif loop.index0 == 1 %}
             {% elif loop.index0 == 5 %}
             
             {% else %}

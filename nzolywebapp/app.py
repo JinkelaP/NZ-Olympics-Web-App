@@ -419,7 +419,7 @@ def showMedals():
                         WHERE Position = 1;")
     goldHolder = connection.fetchall()
 
-    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 2;")
     silverCOUNT = connection.fetchall()
 
     connection.execute("SELECT members.FirstName, members.LastName FROM event_stage_results \
@@ -427,7 +427,7 @@ def showMedals():
                         WHERE Position = 2;")
     silverHolder = connection.fetchall()
 
-    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 3;")
     bronzeCOUNT = connection.fetchall()
 
     connection.execute("SELECT members.FirstName, members.LastName FROM event_stage_results \
