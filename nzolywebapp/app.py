@@ -229,7 +229,7 @@ def edit():
     connection = getCursor()
 
     connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate, members.TeamID FROM members \
-                JOIN teams ON teams.TeamID = members.TeamID;")
+                JOIN teams ON teams.TeamID = members.TeamID ORDER BY teams.TeamName, members.LastName, members.FirstName;")
     searchResult1 = connection.fetchall()
 
     dateConvert(searchResult1,5)
@@ -329,7 +329,7 @@ def saveChangesMember():
     firstName = request.form.get('firstName').lower().capitalize()
     lastName = request.form.get('lastName').lower().capitalize()
     city = request.form.get('city').lower().capitalize()
-    birthDate = request.form.get('date')
+    birthDate = request.form.get('dateedit')
     teamID = request.form.get("teams")
 
     connection = getCursor()
@@ -440,3 +440,20 @@ def showMedals():
     return render_template("medal.html", goldcount = goldCOUNT, goldholder = goldHolder, \
                            silvercount = silverCOUNT, silverholder = silverHolder, \
                            bronzecount = bronzeCOUNT, bronzeholder = bronzeHolder)
+
+
+@app.route("/admin/memberlist")
+def showMembersAdmin():
+    # Members listed grouped into teams, with members ordered by last name then first name within each team.
+    connection = getCursor()
+    connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate, members.TeamID FROM members \
+                    JOIN teams ON teams.TeamID = members.TeamID \
+                    ORDER BY teams.TeamName, members.LastName, members.FirstName;")
+    memberList = connection.fetchall()
+
+    dateConvert(memberList,5)
+
+    if memberList == []:
+        memberList = None
+
+    return render_template("memberlist-admin.html", memberlist = memberList)

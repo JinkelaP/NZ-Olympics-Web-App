@@ -135,6 +135,7 @@
                         {% if loop.index0 == 0 %}
                         {% elif loop.index0 == 3 %}
                         <td><u><b>{{entry}}</b></u></td>
+                        {% elif loop.index0 == 6 %}
                         {% elif loop.index0 == 5 %}
                         <td>{{entry}}</td>
                         <td><button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
@@ -186,9 +187,9 @@
 
                                                     <div class="col-12">
                                                         <label for="team" class="form-label">Team</label>
-                                                        <select class="form-select" id="teams" name="teams"
-                                                            value="{{member[6]}}" required>
-                                                            <option disabled selected>Please select</option>
+                                                        <select class="form-select" id="teams" name="teams" 
+                                                         required>
+                                                            <option value="" disabled selected>Please select</option>
                                                             {% for team in teamlist %}
                                                             <option value="{{team[0]}}">{{team[1]}}</option>
                                                             {%endfor%}
