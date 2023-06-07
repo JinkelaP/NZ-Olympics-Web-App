@@ -9,12 +9,10 @@
 
 <br />
 
-<table class="table table-striped table-bordered border-100">
+<table class="table table-bordered border-100 table-striped">
     <thead>
         <tr>
-            <th>Member ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>Team</th>
             <th>City</th>
             <th>Birthdate</th>
@@ -35,13 +33,17 @@
         {% for member in memberlist %}
         <tr>
             {% for entry in member %}
-            {% if loop.index == 2 %}
-            <td><a href="{{ url_for('memberPage', member_id=member[0]) }}">{{ entry }}</a></td>
+            {% if loop.index0 == 0 %}
+            <td><a href="{{ url_for('memberPage', member_id=member[5]) }}">{{ entry }} {{member[1]}}</a></td>
+            {% elif loop.index0 == 1 %}
+            {% elif loop.index0 == 5 %}
+            
             {% else %}
             <td>{{ entry }}</td>
             {% endif %}
             {% endfor %}
         </tr>
+
         {% endfor %}
     </tbody>
 </table>

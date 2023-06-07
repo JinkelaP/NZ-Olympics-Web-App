@@ -1,0 +1,86 @@
+{% extends "base_admin.html" %}
+{% block title %}Show Medals{% endblock %}
+{% block medal_active %}active{% endblock %}
+{% block content %}
+
+<div class="px-4 pt-1 my-1">
+    <h1 class="display-4 text-body-emphasis fw-bold">Medals</h1>
+
+
+    
+    <div class="col-lg-12">
+        <div class="row g-4">
+            <div class="col-md-7 col-lg-6">
+                <!-- Medal amounts -->
+                <h3 class="text-body-emphasis fw-bold">All medals</h3>
+                <table class="table table-striped table-bordered border-100">
+
+                    <thead>
+                        <tr>
+                            <th>Medal</th>
+                            <th>Amounts</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <td><b>Gold</b></td>
+                            <td>{{ goldcount[0][0] }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Silver</b></td>
+                            <td>{{ silvercount[0][0] }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Bronze</b></td>
+                            <td>{{ bronzecount[0][0] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+            <!-- Results in members winning the medals -->
+
+            <div class="col-md-7 col-lg-6">
+                <h3 class="text-body-emphasis fw-bold">They won them!</h3>
+                <table class="table table-striped table-bordered border-100">
+
+                    <thead>
+                        <tr>
+                            <th>Medal</th>
+                            <th>Member</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for name in goldholder %}<tr>
+
+                            <td><b>Gold</b></td>
+                            <td>{{ name[0] }} {{ name[1] }}</td>
+
+                        </tr>{%endfor%}
+                        {% for name in silverholder %}<tr>
+
+                            <td><b>Silver</b></td>
+                            <td>{{ name[0] }} {{ name[1] }}</td>
+
+                        </tr>{%endfor%}
+                        {% for name in bronzeholder %}<tr>
+
+                            <td><b>Gold</b></td>
+                            <td>{{ name[0] }} {{ name[1] }}</td>
+
+                        </tr>{%endfor%}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

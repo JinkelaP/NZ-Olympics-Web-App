@@ -1,9 +1,29 @@
-{% extends "base.html" %}
-<!-- {% block title %}Admin page{% endblock %} -->
-{% block admin_active %}active{% endblock %}
+{% extends "base_admin.html" %}
+{% block title %}Admin page{% endblock %}
 {% block content %}
 
-<!-- admin -->
-
+<div class="px-4 pt-1 my-5 text-center  border-bottom">
+    <h1 class="display-4 fw-bold text-body-emphasis">Welcome to Admin Page</h1>
+    <div class="col-lg-6 mx-auto">
+        <form class="d-flex my-5" role="search" action="/admin/search" method="GET">
+            <input class="form-control me-2" type="search" name="searchinput" placeholder="Search members or events here!" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+        
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+            <a class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('edit') }}">Edit Everything</a>
+            <a class="btn btn-outline-secondary btn-lg px-4" href="{{ url_for('showMedals') }}">Show Medals</a>
+            <a class="btn btn-outline-secondary btn-lg px-4" href="/">Return to Main Page</a>
+            <a class="btn btn-outline-danger btn-lg px-4" href="{{ url_for('databaseReset') }}">Reset Database</a>
+        </div>
+    </div>
+    <div class="overflow-hidden" style="max-height: 30vh;">
+        <div class="px-5">
+            <img src="{{ url_for('static', filename='img/olympic-rings.png') }}"
+                class="img-fluid border rounded-3 shadow-lg mb-4" alt="Olympic image" width="700" height="500"
+                loading="lazy">
+        </div>
+    </div>
+</div>
 
 {% endblock %}
