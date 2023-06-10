@@ -248,6 +248,20 @@ def databaseResetSQL():
     
     return redirect(url_for('admin'))
 
+# database reset for mainpage
+@app.route("/admin/database_reset/loadingmain")
+def databaseResetSQL2():
+    connection = getCursor()
+    connection.execute("DROP TABLE IF EXISTS events, event_stage, event_stage_results, members, teams;")
+    
+
+    with app.open_resource('nzoly_structure_data_pa.sql', 'r') as sqlFile:
+        sqlStatements = sqlFile.read()
+
+    connection.execute(sqlStatements)
+    
+    return redirect(url_for('home'))
+
 # This is the whole edit page allowing admin to edit/ add everything
 @app.route("/admin/Edit")
 def edit():
