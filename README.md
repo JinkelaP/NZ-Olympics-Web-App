@@ -1,5 +1,23 @@
 # NZ-Olympics-Web-App
-A web app managing members, teams, events and stages in a local olympic committee. A school project.
+
+#Intro
+NZ-Olympics-Web-App web manage members, teams, events and stages in a local olympic committee. This is a school project.
+
+#Structure
+
+...
+
+#Assumptions
+
+...
+
+#Discussion
+
+##The following developments should be made, if the app is going to support multiple different Olympics
+
+...
+
+
 
 
 
