@@ -187,8 +187,7 @@
 
                                                     <div class="col-12">
                                                         <label for="team" class="form-label">Team</label>
-                                                        <select class="form-select" id="teams" name="teams" 
-                                                         required>
+                                                        <select class="form-select" id="teams" name="teams" required>
                                                             <option value="" disabled selected>Please select</option>
                                                             {% for team in teamlist %}
                                                             <option value="{{team[0]}}">{{team[1]}}</option>
@@ -212,7 +211,7 @@
                                                     <div class="col-md-6">
                                                         <label for="date" class="form-label">Date of Birth</label>
                                                         <input type="date" class="form-control" id="dateedit"
-                                                            name="dateedit" placeholder="" max="{{today}}"required>
+                                                            name="dateedit" placeholder="" max="{{today}}" required>
                                                         <div class="invalid-feedback">
                                                             Please enter a valid date.
                                                         </div>
@@ -483,9 +482,10 @@
                                     })
                                 })()
                         </script>
-                        <!-- prevent from inputing future date -->
+                        <!-- prevent from inputing future date + 1 year. The user is able to input an stage within one year forward. -->
                         <script>
-                            datestage.max = new Date().toISOString().split("T")[0];
+                            datestage.max = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0];
+
                         </script>
                         <!-- ban points to qualify if stage is final. -->
                         <script>

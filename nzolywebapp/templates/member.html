@@ -28,47 +28,48 @@
                 print(entry)
             else:
                 entry -->
-                {% set lastevent = namespace(found="") %}
-                {% set lastsport = namespace(found="") %}
-                {% set lasteventchanged = namespace(found="") %}
-                {% if upcominglist != None %}
-                {% for event in upcominglist %}
-                    <tr>
-                        {% for entry in event %}
-                            {% if loop.index0 == 0 %}
-                                {% if entry != lastevent.found %}
-                                    <td><u>{{entry}}</u></td>
-                                    {% set lastevent.found = entry %}
-                                    {% set lasteventchanged.found = True %}
-                                {% else %}
-                                    <td></td>
-                                    {% set lasteventchanged.found = False %}
-                                {% endif %}
-                            {% elif loop.index0 == 1 %}
-                                {% if entry != lastsport.found or lasteventchanged.found == True %}
-                                    <td><u>{{entry}}</u></td>
-                                    {% set lastsport.found = entry %}
-                                {% else %}
-                                    <td></td>
-                                {% endif %}
-                            {% else %}
-                                <td>{{entry}}</td>
-                            {% endif %}
-        
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-                {% endif %}
+        {% set lastevent = namespace(found="") %}
+        {% set lastsport = namespace(found="") %}
+        {% set lasteventchanged = namespace(found="") %}
+        {% if upcominglist != None %}
+        {% for event in upcominglist %}
+        <tr>
+            {% for entry in event %}
+            {% if loop.index0 == 0 %}
+            {% if entry != lastevent.found %}
+            <td><u>{{entry}}</u></td>
+            {% set lastevent.found = entry %}
+            {% set lasteventchanged.found = True %}
+            {% else %}
+            <td></td>
+            {% set lasteventchanged.found = False %}
+            {% endif %}
+            {% elif loop.index0 == 1 %}
+            {% if entry != lastsport.found or lasteventchanged.found == True %}
+            <td><u>{{entry}}</u></td>
+            {% set lastsport.found = entry %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            {% elif loop.index0 == 5 %}
+            {% else %}
+            <td>{{entry}}</td>
+            {% endif %}
+
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        {% endif %}
 
 
     </tbody>
 </table>
 
 {% if upcominglist == None %}
-    <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-        No result found from the database!
-      </div>
-    {% endif %}
+<div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+    No result found from the database!
+</div>
+{% endif %}
 <br />
 
 <h3 class="text-body-emphasis fw-bold">Previous Results</h3>
@@ -89,40 +90,41 @@
         {% set lasteventchanged = namespace(found="") %}
         {% if previouslist != None %}
         {% for event in previouslist %}
-            <tr>
-                {% for entry in event %}
-                    {% if loop.index0 == 0 %}
-                        {% if entry != lastevent.found %}
-                            <td><u>{{entry}}</u></td>
-                            {% set lastevent.found = entry %}
-                            {% set lasteventchanged.found = True %}
-                        {% else %}
-                            <td></td>
-                            {% set lasteventchanged.found = False %}
-                        {% endif %}
-                    {% elif loop.index0 == 1 %}
-                        {% if entry != lastsport.found or lasteventchanged.found == True %}
-                            <td><u>{{entry}}</u></td>
-                            {% set lastsport.found = entry %}
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                    {% else %}
-                        <td>{{entry}}</td>
-                    {% endif %}
+        <tr>
+            {% for entry in event %}
+            {% if loop.index0 == 0 %}
+            {% if entry != lastevent.found %}
+            <td><u>{{entry}}</u></td>
+            {% set lastevent.found = entry %}
+            {% set lasteventchanged.found = True %}
+            {% else %}
+            <td></td>
+            {% set lasteventchanged.found = False %}
+            {% endif %}
+            {% elif loop.index0 == 1 %}
+            {% if entry != lastsport.found or lasteventchanged.found == True %}
+            <td><u>{{entry}}</u></td>
+            {% set lastsport.found = entry %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            
+            {% else %}
+            <td>{{entry}}</td>
+            {% endif %}
 
-                {% endfor %}
-            </tr>
+            {% endfor %}
+        </tr>
         {% endfor %}
         {% endif %}
     </tbody>
 </table>
 
 {% if previouslist == None %}
-    <div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
-        No result found from the database!
-      </div>
-    {% endif %}
+<div class="p-3 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-3">
+    No result found from the database!
+</div>
+{% endif %}
 
 
 {% endblock %}
