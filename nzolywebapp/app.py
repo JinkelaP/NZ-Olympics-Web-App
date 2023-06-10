@@ -80,16 +80,41 @@ def memberPage(member_id):
         
         nameMember = memberInfo[0][0] + ' ' + memberInfo[0][1]
 
-        # Show upcoming events
-        connection.execute("SELECT events.EventName, events.Sport, event_stage.StageDate, event_stage.StageName, event_stage.Location, event_stage_results.Position \
-                           FROM events\
-                           JOIN event_stage ON events.EventID=event_stage.EventID\
-                           JOIN event_stage_results ON event_stage.StageID = event_stage_results.StageID\
-                           WHERE event_stage_results.PointsScored IS NULL and event_stage_results.memberID=%s;",(member_id,))
+        # Show upcoming events. The query find the events that a member in the team must participate and has not yet recieved a result.
+        connection.execute("SELECT events.EventName, events.Sport, event_stage.StageDate, event_stage.StageName, event_stage.Location, events.EventID\
+                            FROM events\
+                            JOIN teams ON teams.TeamID=events.NZTeam\
+                            JOIN members ON members.TeamID=teams.TeamID\
+                            JOIN event_stage ON events.EventID=event_stage.EventID\
+                            LEFT JOIN event_stage_results ON event_stage_results.StageID=event_stage.StageID AND event_stage_results.MemberID=members.MemberID\
+                            WHERE PointsScored IS NULL and members.memberID=%s;",(member_id,))
         upcomingList = connection.fetchall()
         # convert date
         if upcomingList != []:
             dateConvert(upcomingList,2)
+        # If a final stage is detected in the upcoming list, the programme will validate whether the member has took
+        # part in the previous qualifying stage. If the member did not participate or qualified, the final stage won't get shown.
+            for index, stage in enumerate(upcomingList):
+                indexAdjust = 0
+                if 'final' in stage[3].lower():
+                    connection.execute("SELECT * FROM event_stage \
+                                        WHERE EventID=%s;",(stage[5],))
+                    eventResult = connection.fetchall()
+                    for stage in eventResult:
+                        if stage[5] == 1:
+                            qualiPoints = stage[6]
+                            connection.execute("SELECT * FROM event_stage_results \
+                                               WHERE StageID=%s AND MemberID=%s",(stage[0],member_id))
+                            allResults = connection.fetchall()
+                            if allResults != []:
+                                memberPoints = allResults[0][3]
+                                if memberPoints < qualiPoints:
+                                    del upcomingList[index - indexAdjust]
+                                    indexAdjust += 1
+                            else:
+                                del upcomingList[index - indexAdjust]
+                                indexAdjust += 1
+
         else:
             upcomingList = None
 
@@ -223,7 +248,7 @@ def databaseResetSQL():
     
     return redirect(url_for('admin'))
 
-# This is the whole edit page allowing admin to edit everything
+# This is the whole edit page allowing admin to edit/ add everything
 @app.route("/admin/Edit")
 def edit():
     connection = getCursor()
