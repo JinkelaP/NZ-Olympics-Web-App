@@ -21,16 +21,25 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
+        {% set lastevent = namespace(found="") %}
+        {% set lasteventchanged = namespace(found="") %}
         {% if memberlist != None %}
         {% for member in memberlist %}
         <tr>
             {% for entry in member %}
             {% if loop.index0 == 0 %}
+            {% elif loop.index0 == 1 %}
+            {% if entry != lastevent.found %}
+            <td><b>{{entry}}</b></td>
+            {% set lastevent.found = entry %}
+            {% set lasteventchanged.found = True %}
+            {% else %}
+            <td></td>
+            {% set lasteventchanged.found = False %}
+            {% endif %}
             {% elif loop.index0 == 3 %}
             <td><u><b>{{entry}}</b></u></td>
-            {% elif loop.index0 == 5 %}
-            <td>{{entry}}</td>
-
+            {% elif loop.index0 == 6 %}
             {% else %}
             <td>{{entry}}</td>
             {% endif %}

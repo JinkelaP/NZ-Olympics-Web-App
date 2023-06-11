@@ -486,8 +486,8 @@ def showMembersAdmin():
     # Members listed grouped into teams, with members ordered by last name then first name within each team.
     connection = getCursor()
     connection.execute("SELECT members.memberID, teams.TeamName, members.FirstName, members.LastName, members.City, members.Birthdate, members.TeamID FROM members \
-                    JOIN teams ON teams.TeamID = members.TeamID \
-                    ORDER BY teams.TeamName, members.LastName, members.FirstName;")
+                        JOIN teams ON teams.TeamID = members.TeamID \
+                        ORDER BY teams.TeamName, members.LastName, members.FirstName;")
     memberList = connection.fetchall()
 
     dateConvert(memberList,5)
